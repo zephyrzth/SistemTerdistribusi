@@ -1,3 +1,5 @@
+Tugas 2 Sistem Terdistribusi - Anargya Widyadhana - 05111740000047
+
 Tutorial
 https://buildmedia.readthedocs.org/media/pdf/pyro4/stable/pyro4.pdf
 
@@ -11,12 +13,4 @@ python3 -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
 
-
-menjalankan program
-cd c0
-python greet_server.py
-
-
-untuk client
-python greet_client.py
 
