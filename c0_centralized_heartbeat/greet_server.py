@@ -1,4 +1,4 @@
-from c0.greet import *
+from c0_centralized_heartbeat.greet import *
 import Pyro4
 
 
