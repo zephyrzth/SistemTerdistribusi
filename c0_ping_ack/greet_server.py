@@ -1,4 +1,4 @@
-from c0.greet import *
+from c0_ping_ack.greet import *
 import Pyro4
 
 

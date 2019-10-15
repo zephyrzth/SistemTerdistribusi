@@ -8,6 +8,8 @@ def get_fileserver_object():
 
 if __name__=='__main__':
     f = get_fileserver_object()
+    #print(f.create('coba.txt'))
     print(f.list())
-    print(f.read('f2'))
+    #print(f.read('coba.txt'))
+    #print(f.delete('f2'))
 
