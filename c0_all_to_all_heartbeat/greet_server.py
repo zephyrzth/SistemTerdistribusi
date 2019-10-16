@@ -3,9 +3,6 @@ import Pyro4
 import time
 import threading
 
-class AllHeartbeat(GreetServer):
-    def __init__(self):
-        super().__init__()
 
 def start_without_ns():
     daemon = Pyro4.Daemon()
@@ -18,27 +15,37 @@ def start_without_ns():
 class AllHeartbeat(GreetServer):
     def __init__(self):
         super().__init__()
-        self.connect_to = ["greetserver2"]
+        self.connect_to = ["greetserver2", "greetserver3"]
         self.gserver = []
         self.client_id = []
         self.t = []
 
     def coba_heartbeat(self):
-        i = 0
         for x in self.connect_to:
+            flag = False
             uri = "PYRONAME:{}@localhost:7777".format(x)
-            self.gserver[i] = Pyro4.Proxy(uri)
-            self.client_id[i] = self.gserver[i].get_device_total()
-            print(self.gserver[i].add_device(self.client_id[i]))
-            i = i + 1
-            self.t[i] = threading.Thread(target=self.send_heartbeat, args=(self.gserver[i], self.client_id[i]))
-            self.t[i].start()
+            while flag == False:
+                time.sleep(5)
+                try:
+                    self.gserver.append(Pyro4.Proxy(uri))
+                    device_id = self.gserver.index(Pyro4.Proxy(uri))
+                    #print(device_id)
+                    self.client_id.append(device_id)
+                    print(self.gserver[device_id].add_device(device_id, x))
+                    self.t.append(threading.Thread(target=self.send_heartbeat, args=(device_id, x,)))
+                    self.t[device_id].start()
+                    flag = True
+                except:
+                    print("Device {} not running!\n".format(x))
 
-    def send_heartbeat(self, gserver, client_id):
+    def send_heartbeat(self, device_id, device_name):
         while True:
             time.sleep(5)
-            print(gserver.add_heartbeat(client_id))
-            gserver.central_heartbeat()
+            try:
+                print(self.gserver[device_id].add_heartbeat(device_id, device_name))
+                self.gserver[device_id].central_heartbeat()
+            except:
+                continue
 
     def start_with_ns(self):
         # name server harus di start dulu dengan  pyro4-ns -n localhost -p 7777
@@ -49,7 +56,7 @@ class AllHeartbeat(GreetServer):
         x_GreetServer = Pyro4.expose(GreetServer)
         uri_greetserver = daemon.register(x_GreetServer)
         print("URI greet server : ", uri_greetserver)
-        ns.register("greetserver2", uri_greetserver)
+        ns.register("greetserver", uri_greetserver)
         daemon.requestLoop()
 
     def run(self):

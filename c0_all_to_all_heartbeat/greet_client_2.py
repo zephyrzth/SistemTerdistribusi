@@ -7,7 +7,7 @@ import threading
 class AllHeartbeat(GreetServer):
     def __init__(self):
         super().__init__()
-        self.connect_to = ["greetserver", "greetserver3"]
+        self.connect_to = ["greetserver", "greetserver2"]
         self.gserver = []
         self.client_id = []
         self.t = []
@@ -48,7 +48,7 @@ class AllHeartbeat(GreetServer):
         x_GreetServer = Pyro4.expose(GreetServer)
         uri_greetserver = daemon.register(x_GreetServer)
         print("URI greet server : ", uri_greetserver)
-        ns.register("greetserver2", uri_greetserver)
+        ns.register("greetserver3", uri_greetserver)
         daemon.requestLoop()
 
     def run(self):

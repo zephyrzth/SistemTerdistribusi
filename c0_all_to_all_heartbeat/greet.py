@@ -1,10 +1,49 @@
 import random
 import os
 import glob
+import time
+import threading
+
+CHECK_TIMEOUT = 15
+
 
 class GreetServer(object):
+    data = {}
+
     def __init__(self):
-        pass
+        self.connected_device = {}
+        self.failed_device = []
+
+    def get_device_total(self):
+        return len(self.connected_device)
+
+    def add_device(self, device_id, device_name):
+        self.connected_device[device_id] = time.time()
+        print("Device {} added\n".format(device_name))
+        return "Successfully added\n"
+
+    def add_heartbeat(self, device_id, device_name):
+        try:
+            self.connected_device.update({
+                device_id: time.time()
+            })
+            print("Device {} heartbeat received\n".format(device_name))
+            return "Heartbeat success\n"
+        except:
+            return "Heartbeat failed\n"
+
+    def check_heartbeat(self):
+        while True:
+            limit = time.time() - CHECK_TIMEOUT
+            self.failed_device = [device_id for (device_id, lastTime) in self.connected_device.items() if lastTime < limit]
+            for x in self.failed_device:
+                self.connected_device.pop(x)
+                print("Device {} failed\n".format(x))
+                # GreetServer.data["timesta"]
+
+    def central_heartbeat(self):
+        t1 = threading.Thread(target=self.check_heartbeat)
+        t1.start()
 
     def get_greet(self, name='NoName'):
         lucky_number = random.randint(1, 100000)
@@ -42,6 +81,7 @@ class GreetServer(object):
         for f in files:
             hasil.append(f)
         return hasil
+
 
 if __name__ == '__main__':
     k = GreetServer()

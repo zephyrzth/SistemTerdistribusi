@@ -4,7 +4,14 @@ car = {
   "year": 1964
 }
 
+motor = ["satu", "dua", "tiga"]
+motor.insert(5, "empat")
+motor.remove("dua")
+#print(motor.index("empat"))
+
 car.update({"brand": "Honda"})
 a = car.pop("brand")
+print(len(car))
 
-print(a)
+#print(len(a))
+#print(motor)
